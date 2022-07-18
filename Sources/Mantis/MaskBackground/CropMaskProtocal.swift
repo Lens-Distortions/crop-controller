@@ -8,12 +8,12 @@
 
 import UIKit
 
+// TODO: remove these properties eventually
 private let minOverLayerUnit: CGFloat = 30
 private let initialFrameLength: CGFloat = 1000
 
 protocol CropMaskProtocol where Self: UIView {
     var cropShapeType: CropShapeType { get set }
-    var innerLayer: CALayer? { get set }
     
     func initialize(cropRatio: CGFloat)
     func setMask(cropRatio: CGFloat)
@@ -22,40 +22,14 @@ protocol CropMaskProtocol where Self: UIView {
 
 extension CropMaskProtocol {
     func initialize(cropRatio: CGFloat = 1.0) {
-        setInitialFrame()
         setMask(cropRatio: cropRatio)
     }
     
-    private func setInitialFrame() {
-        let width = initialFrameLength
-        let height = initialFrameLength
-        let screenWidth = UIScreen.main.bounds.width
-        let screenHeight = UIScreen.main.bounds.height
-        
-        let originX = (screenWidth - width) / 2
-        let originY = (screenHeight - height) / 2
-        
-        self.frame = CGRect(x: originX, y: originY, width: width, height: height)
-    }
-    
     func adaptMaskTo(match cropRect: CGRect, cropRatio: CGFloat) {
-        let scaleX: CGFloat
-        
-        switch cropShapeType {
-        case .roundedRect:
-            innerLayer?.removeFromSuperlayer()
-            setMask(cropRatio: cropRatio)
-            scaleX = cropRect.width / (minOverLayerUnit * cropRatio)
-        default:
-            scaleX = cropRect.width / minOverLayerUnit
+        if let mask = self.mask as? MaskView {
+            mask.cropRect = cropRect
+//            print("adaptMaskTo \(cropRect)")
         }
-                
-        let scaleY = cropRect.height / minOverLayerUnit
-
-        transform = CGAffineTransform(scaleX: scaleX, y: scaleY)
-
-        self.frame.origin.x = cropRect.midX - self.frame.width / 2
-        self.frame.origin.y = cropRect.midY - self.frame.height / 2
     }
     
     func createOverLayer(opacity: Float, cropRatio: CGFloat = 1.0) -> CAShapeLayer {
