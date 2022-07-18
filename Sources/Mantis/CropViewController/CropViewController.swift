@@ -375,11 +375,11 @@ extension CropViewController: CropToolbarDelegate {
     public func didSelectHorizontallyFlip(_ cropToolbar: CropToolbarProtocol? = nil) {
         handleHorizontallyFlip()
     }
-    
+
     public func didSelectVerticallyFlip(_ cropToolbar: CropToolbarProtocol? = nil) {
         handleVerticallyFlip()
     }
-    
+
     public func didSelectCancel(_ cropToolbar: CropToolbarProtocol? = nil) {
         handleCancel()
     }
@@ -405,7 +405,7 @@ extension CropViewController: CropToolbarDelegate {
     }
     
     public func didSelectRatio(_ cropToolbar: CropToolbarProtocol? = nil, ratio: Double) {
-        setFixedRatio(ratio)
+        setFixedRatio(ratio, zoom: false)
     }
     
     public func didSelectFreeRatio(_ cropToolbar: CropToolbarProtocol? = nil) {
