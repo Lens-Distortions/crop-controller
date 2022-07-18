@@ -555,7 +555,7 @@ extension CropViewController: CropToolbarDelegate {
     }
     
     public func didSelectRatio(ratio: Double) {
-        setFixedRatio(ratio)
+        setFixedRatio(ratio, zoom: false)
     }
     
     public func didSelectAlterCropper90Degree() {
