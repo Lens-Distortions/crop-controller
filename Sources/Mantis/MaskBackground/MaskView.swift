@@ -29,14 +29,9 @@ class MaskView: UIView {
             // if an implicit animation has been initiated, it can be retrieved via one of many standard, longstanding view property keys
             if let currentAnimation = action(for: layer, forKey: "backgroundColor") as? CABasicAnimation {
                 let pathAnimation = currentAnimation.copy(withKeyPath: "path")
-                pathAnimation.fromValue = shapeLayer.path
+                pathAnimation.fromValue = shapeLayer.presentation()?.path
                 pathAnimation.toValue = newPath
-
-                // don't overwrite an existing animation
-                let animationKeys = layer.animationKeys()
-                if animationKeys == nil || !animationKeys!.contains("pathAnimation") {
-                    layer.add(pathAnimation, forKey: "pathAnimation")
-                }
+                layer.add(pathAnimation, forKey: "pathAnimation")
             }
 
             shapeLayer.path = newPath
