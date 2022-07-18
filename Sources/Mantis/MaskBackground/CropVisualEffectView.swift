@@ -45,5 +45,4 @@ class CropVisualEffectView: UIVisualEffectView, CropMaskProtocol {
             return (nil, .black)
         }
     }
-    
 }

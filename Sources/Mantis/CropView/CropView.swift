@@ -113,14 +113,14 @@ class CropView: UIView {
             self.cropMaskViewManager.adaptMaskTo(match: cropFrame, cropRatio: cropRatio)
         }
         
-        initalRender()
+        initialRender()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func initalRender() {
+    private func initialRender() {
         setupUI()
         checkImageStatusChanged()
     }
@@ -130,7 +130,7 @@ class CropView: UIView {
         
         switch viewStatus {
         case .initial:
-            initalRender()
+            initialRender()
         case .rotating(let angle):
             viewModel.degrees = angle.degrees
             rotateScrollView()
@@ -561,16 +561,7 @@ extension CropView {
     func crop(_ image: UIImage) -> CropOutput {
 
         let cropInfo = getCropInfo()
-        
-        let transformation = Transformation(
-            offset: scrollView.contentOffset,
-            rotation: getTotalRadians(),
-            scale: scrollView.zoomScale,
-            manualZoomed: manualZoomed,
-            intialMaskFrame: getInitialCropBoxRect(),
-            maskFrame: gridOverlayView.frame,
-            scrollBounds: scrollView.bounds
-        )
+        let transformation = getTransformation()
         
         guard let croppedImage = image.crop(by: cropInfo) else {
             return (nil, transformation, cropInfo)
@@ -607,7 +598,6 @@ extension CropView {
     }
     
     func getCropInfo() -> CropInfo {
-        
         let rect = imageContainer.convert(imageContainer.bounds,
                                           to: self)
         let point = rect.center
@@ -622,7 +612,18 @@ extension CropView {
             cropSize: gridOverlayView.frame.size,
             imageViewSize: imageContainer.bounds.size
         )
-        
+    }
+
+    func getTransformation() -> Transformation {
+        return Transformation(
+                offset: scrollView.contentOffset,
+                rotation: getTotalRadians(),
+                scale: scrollView.zoomScale,
+                manualZoomed: manualZoomed,
+                initialMaskFrame: getInitialCropBoxRect(),
+                maskFrame: gridOverlayView.frame,
+                scrollBounds: scrollView.bounds
+        )
     }
     
     func getTotalRadians() -> CGFloat {
@@ -667,13 +668,13 @@ extension CropView {
     
     func rotateBy90(rotateAngle: CGFloat, completion: @escaping () -> Void = {}) {
         viewModel.setDegree90RotatingStatus()
-        let rorateDuration = 0.25
+        let rotateDuration = 0.25
         
         if forceFixedRatio {
             viewModel.setRotatingStatus(by: CGAngle(radians: viewModel.radians))
             let angle = CGAngle(radians: rotateAngle + viewModel.radians)
             
-            UIView.animate(withDuration: rorateDuration, animations: {
+            UIView.animate(withDuration: rotateDuration, animations: {
                 self.viewModel.setRotatingStatus(by: angle)
             }, completion: {[weak self] _ in
                 guard let self = self else { return }
@@ -692,11 +693,11 @@ extension CropView {
         let newRect = GeometryHelper.getInscribeRect(fromOutsideRect: getContentBounds(), andInsideRect: rect)
         
         let radian = rotateAngle
-        let transfrom = scrollView.transform.rotated(by: radian)
+        let transform = scrollView.transform.rotated(by: radian)
         
-        UIView.animate(withDuration: rorateDuration, animations: {
+        UIView.animate(withDuration: rotateDuration, animations: {
             self.viewModel.cropBoxFrame = newRect
-            self.scrollView.transform = transfrom
+            self.scrollView.transform = transform
             self.updatePositionFor90Rotation(by: radian + self.viewModel.radians)
         }, completion: {[weak self] _ in
             guard let self = self else { return }
@@ -751,7 +752,7 @@ extension CropView {
         scrollView.updateMinZoomScale()
     }
     
-    func getRatioType(byImageIsOriginalisHorizontal isHorizontal: Bool) -> RatioType {
+    func getRatioType(byImageIsOriginalHorizontal isHorizontal: Bool) -> RatioType {
         return viewModel.getRatioType(byImageIsOriginalHorizontal: isHorizontal)
     }
     
