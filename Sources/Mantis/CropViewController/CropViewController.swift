@@ -148,7 +148,7 @@ public class CropViewController: UIViewController {
     private func getRatioType() -> RatioType {
         switch config.cropToolbarConfig.fixedRatiosShowType {
         case .adaptive:
-            return cropView.getRatioType(byImageIsOriginalisHorizontal: cropView.image.isHorizontal())
+            return cropView.getRatioType(byImageIsOriginalHorizontal: cropView.image.isHorizontal())
         case .horizontal:
             return .horizontal
         case .vertical:
@@ -267,12 +267,12 @@ public class CropViewController: UIViewController {
             
             // The second transform is for adjusting the scale of transformInfo
             let adjustScale = (cropView.viewModel.cropBoxFrame.width / cropView.viewModel.cropOrignFrame.width)
-            / (transformInfo.maskFrame.width / transformInfo.intialMaskFrame.width)
+            / (transformInfo.maskFrame.width / transformInfo.initialMaskFrame.width)
             newTransform.scale *= adjustScale
             cropView.transform(byTransformInfo: newTransform)
             completion(transformInfo)
-        } else if case .presetNormalizedInfo(let normailizedInfo) = config.cropViewConfig.presetTransformationType {
-            let transformInfo = getTransformInfo(byNormalizedInfo: normailizedInfo)
+        } else if case .presetNormalizedInfo(let normalizedInfo) = config.cropViewConfig.presetTransformationType {
+            let transformInfo = getTransformInfo(byNormalizedInfo: normalizedInfo)
             cropView.transform(byTransformInfo: transformInfo)
             cropView.scrollView.frame = transformInfo.maskFrame
             completion(transformInfo)
@@ -296,7 +296,7 @@ public class CropViewController: UIViewController {
             }
         }
     }
-        
+
     private func getTransformInfo(byTransformInfo transformInfo: Transformation) -> Transformation {
         let cropFrame = cropView.viewModel.cropOrignFrame
         let contentBound = cropView.getContentBounds()
@@ -332,36 +332,36 @@ public class CropViewController: UIViewController {
         return newTransform
     }
     
-    private func getTransformInfo(byNormalizedInfo normailizedInfo: CGRect) -> Transformation {
+    private func getTransformInfo(byNormalizedInfo normalizedInfo: CGRect) -> Transformation {
         let cropFrame = cropView.viewModel.cropBoxFrame
         
-        let scale: CGFloat = min(1/normailizedInfo.width, 1/normailizedInfo.height)
+        let scale: CGFloat = min(1/normalizedInfo.width, 1/normalizedInfo.height)
         
         var offset = cropFrame.origin
-        offset.x = cropFrame.width * normailizedInfo.origin.x * scale
-        offset.y = cropFrame.height * normailizedInfo.origin.y * scale
+        offset.x = cropFrame.width * normalizedInfo.origin.x * scale
+        offset.y = cropFrame.height * normalizedInfo.origin.y * scale
         
         var maskFrame = cropFrame
         
-        if normailizedInfo.width > normailizedInfo.height {
-            let adjustScale = 1 / normailizedInfo.width
-            maskFrame.size.height = normailizedInfo.height * cropFrame.height * adjustScale
+        if normalizedInfo.width > normalizedInfo.height {
+            let adjustScale = 1 / normalizedInfo.width
+            maskFrame.size.height = normalizedInfo.height * cropFrame.height * adjustScale
             maskFrame.origin.y += (cropFrame.height - maskFrame.height) / 2
-        } else if normailizedInfo.width < normailizedInfo.height {
-            let adjustScale = 1 / normailizedInfo.height
-            maskFrame.size.width = normailizedInfo.width * cropFrame.width * adjustScale
+        } else if normalizedInfo.width < normalizedInfo.height {
+            let adjustScale = 1 / normalizedInfo.height
+            maskFrame.size.width = normalizedInfo.width * cropFrame.width * adjustScale
             maskFrame.origin.x += (cropFrame.width - maskFrame.width) / 2
         }
         
         let manualZoomed = (scale != 1.0)
-        let transformantion = Transformation(offset: offset,
+        let transformation = Transformation(offset: offset,
                                              rotation: 0,
                                              scale: scale,
                                              manualZoomed: manualZoomed,
-                                             intialMaskFrame: .zero,
+                                             initialMaskFrame: .zero,
                                              maskFrame: maskFrame,
                                              scrollBounds: .zero)
-        return transformantion
+        return transformation
     }
     
     private func handleCancel() {
@@ -419,7 +419,6 @@ public class CropViewController: UIViewController {
                 self?.ratioSelector?.update(fixedRatioManager: self?.getFixedRatioManager())
             }
         }
-        
     }
     
     private func handleAlterCropper90Degree() {
@@ -435,11 +434,11 @@ public class CropViewController: UIViewController {
     private func handleHorizontallyFlip() {
         cropView.horizontallyFlip()
     }
-    
+
     private func handleVerticallyFlip() {
         cropView.verticallyFlip()
     }
-    
+
     private func handleCrop() {
         let cropResult = cropView.crop()
         guard let image = cropResult.croppedImage else {
@@ -536,11 +535,11 @@ extension CropViewController: CropToolbarDelegate {
     public func didSelectHorizontallyFlip() {
         handleHorizontallyFlip()
     }
-    
+
     public func didSelectVerticallyFlip() {
         handleVerticallyFlip()
     }
-    
+
     public func didSelectCancel() {
         handleCancel()
     }
@@ -571,7 +570,7 @@ extension CropViewController: CropToolbarDelegate {
     
     public func didSelectAlterCropper90Degree() {
         handleAlterCropper90Degree()
-    }    
+    }
 }
 
 // API
@@ -592,9 +591,12 @@ extension CropViewController {
     public func process(_ image: UIImage) -> UIImage? {
         return cropView.crop(image).croppedImage
     }
-    
+
     public func getExpectedCropImageSize() -> CGSize {
         cropView.getExpectedCropImageSize()
     }
 
+    public func getCropInfo() -> (CropInfo, Transformation) {
+        return (cropView.getCropInfo(), cropView.getTransformation())
+    }
 }

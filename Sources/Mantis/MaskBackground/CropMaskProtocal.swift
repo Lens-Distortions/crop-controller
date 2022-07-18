@@ -12,6 +12,7 @@ import UIKit
 private let minOverLayerUnit: CGFloat = 30
 private let initialFrameLength: CGFloat = 1000
 
+// TODO: clean this up
 protocol CropMaskProtocol where Self: UIView {
     var cropShapeType: CropShapeType { get set }
     

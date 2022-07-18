@@ -25,13 +25,13 @@
 import UIKit
 
 public typealias Transformation = (
-    offset: CGPoint,
-    rotation: CGFloat,
-    scale: CGFloat,
-    manualZoomed: Bool,
-    intialMaskFrame: CGRect,
-    maskFrame: CGRect,
-    scrollBounds: CGRect
+        offset: CGPoint,
+        rotation: CGFloat,
+        scale: CGFloat,
+        manualZoomed: Bool,
+        initialMaskFrame: CGRect,
+        maskFrame: CGRect,
+        scrollBounds: CGRect
 )
 
 public typealias CropInfo = (
