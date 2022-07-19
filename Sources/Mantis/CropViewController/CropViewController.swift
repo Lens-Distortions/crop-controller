@@ -585,4 +585,9 @@ extension CropViewController {
     public func getCropInfo() -> (CropInfo, Transformation) {
         return (cropView.getCropInfo(), cropView.getTransformation())
     }
+
+    public func disableFixedRatio() {
+        resetRatioButton()
+        cropView.viewModel.aspectRatio = -1
+    }
 }
