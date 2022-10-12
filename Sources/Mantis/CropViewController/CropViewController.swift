@@ -189,7 +189,7 @@ open class CropViewController: UIViewController {
     private func setFreeRatio() {
         resetRatioButton()
     }
-    
+
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         cropView.processPresetTransformation { [weak self] transformation in
