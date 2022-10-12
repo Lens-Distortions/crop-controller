@@ -259,7 +259,7 @@ public class CropViewController: UIViewController {
         }
     }
 
-    private func processPresetTransformation() {
+    private func processPresetTransformation() -> Transformation? {
         if case .presetInfo(let transformInfo) = config.cropViewConfig.presetTransformationType {
             var newTransform = getTransformInfo(byTransformInfo: transformInfo)
 
@@ -268,28 +268,32 @@ public class CropViewController: UIViewController {
 
             // The second transform is for adjusting the scale of transformInfo
             let adjustScale = (cropView.viewModel.cropBoxFrame.width / cropView.viewModel.cropOrignFrame.width)
-                    / (transformInfo.maskFrame.width / transformInfo.initialMaskFrame.width)
+            / (transformInfo.maskFrame.width / transformInfo.initialMaskFrame.width)
             newTransform.scale *= adjustScale
             cropView.transform(byTransformInfo: newTransform)
+            return transformInfo
         } else if case .presetNormalizedInfo(let normalizedInfo) = config.cropViewConfig.presetTransformationType {
             let transformInfo = getTransformInfo(byNormalizedInfo: normalizedInfo)
             cropView.transform(byTransformInfo: transformInfo)
             cropView.scrollView.frame = transformInfo.maskFrame
+            return transformInfo
         }
+
+        return nil
     }
 
     private func layoutPerTransformationPreset() {
-        processPresetTransformation()
+        if let transform = processPresetTransformation() {
+            if case .alwaysUsingOnePresetFixedRatio(let ratio) = self.config.presetFixedRatioType {
+                self.cropView.aspectRatioLockEnabled = true
+                self.cropToolbar.handleFixedRatioSetted(ratio: ratio)
 
-        if case .alwaysUsingOnePresetFixedRatio(let ratio) = self.config.presetFixedRatioType {
-            self.cropView.aspectRatioLockEnabled = true
-            self.cropToolbar.handleFixedRatioSetted(ratio: ratio)
-
-            if ratio == 0 {
-                self.cropView.viewModel.aspectRatio = transform.maskFrame.width / transform.maskFrame.height
-            } else {
-                self.cropView.viewModel.aspectRatio = CGFloat(ratio)
-                self.cropView.setFixedRatioCropBox(zoom: false, cropBox: cropView.viewModel.cropBoxFrame)
+                if ratio == 0 {
+                    self.cropView.viewModel.aspectRatio = transform.maskFrame.width / transform.maskFrame.height
+                } else {
+                    self.cropView.viewModel.aspectRatio = CGFloat(ratio)
+                    self.cropView.setFixedRatioCropBox(zoom: false, cropBox: cropView.viewModel.cropBoxFrame)
+                }
             }
         }
     }
