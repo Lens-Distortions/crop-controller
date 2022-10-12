@@ -737,7 +737,7 @@ extension CropView {
     
     func rotateBy90(rotateAngle: CGFloat, completion: @escaping () -> Void = {}) {
         viewModel.setDegree90RotatingStatus()
-        let rorateDuration = 0.25
+        let rotateDuration = 0.25
         var rect = gridOverlayView.frame        
         rect.size.width = gridOverlayView.frame.height
         rect.size.height = gridOverlayView.frame.width

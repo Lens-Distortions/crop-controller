@@ -15,7 +15,7 @@ class CropMaskVisualEffectView: UIVisualEffectView, CropMaskProtocol {
     fileprivate var translucencyEffect: UIVisualEffect?
     
     convenience init(frame: CGRect, cropShapeType: CropShapeType = .rect,
-                     effectType: CropMaskVisualEffectView = .blurDark,
+                     effectType: CropMaskVisualEffectType = .blurDark,
                      cropRatio: CGFloat = 1.0) {
         
         let (translucencyEffect, backgroundColor) = CropMaskVisualEffectView.getEffect(byType: effectType)
