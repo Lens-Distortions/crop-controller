@@ -140,6 +140,7 @@ open class CropViewController: UIViewController {
             initialLayout = true
             view.layoutIfNeeded()
             cropView.resetComponents()
+            layoutPerTransformationPreset()
         }
     }
     
