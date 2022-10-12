@@ -188,6 +188,7 @@ public class CropViewController: UIViewController {
             initialLayout = true
             view.layoutIfNeeded()
             cropView.adaptForCropBox()
+            layoutPerTransformationPreset()
         }
     }
     
@@ -257,46 +258,42 @@ public class CropViewController: UIViewController {
             cropView.forceFixedRatio = false
         }
     }
-    
-    private func processPresetTransformation(completion: (Transformation) -> Void) {
+
+    private func processPresetTransformation() {
         if case .presetInfo(let transformInfo) = config.cropViewConfig.presetTransformationType {
             var newTransform = getTransformInfo(byTransformInfo: transformInfo)
-            
+
             // The first transform is just for retrieving the final cropBoxFrame
             cropView.transform(byTransformInfo: newTransform, rotateDial: false)
-            
+
             // The second transform is for adjusting the scale of transformInfo
             let adjustScale = (cropView.viewModel.cropBoxFrame.width / cropView.viewModel.cropOrignFrame.width)
-            / (transformInfo.maskFrame.width / transformInfo.initialMaskFrame.width)
+                    / (transformInfo.maskFrame.width / transformInfo.initialMaskFrame.width)
             newTransform.scale *= adjustScale
             cropView.transform(byTransformInfo: newTransform)
-            completion(transformInfo)
         } else if case .presetNormalizedInfo(let normalizedInfo) = config.cropViewConfig.presetTransformationType {
             let transformInfo = getTransformInfo(byNormalizedInfo: normalizedInfo)
             cropView.transform(byTransformInfo: transformInfo)
             cropView.scrollView.frame = transformInfo.maskFrame
-            completion(transformInfo)
-        }
-    }
-    
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        processPresetTransformation { [weak self] transform in
-            guard let self = self else { return }
-            if case .alwaysUsingOnePresetFixedRatio(let ratio) = self.config.presetFixedRatioType {
-                self.cropView.aspectRatioLockEnabled = true
-                self.cropToolbar.handleFixedRatioSetted(ratio: ratio)
-                
-                if ratio == 0 {
-                    self.cropView.viewModel.aspectRatio = transform.maskFrame.width / transform.maskFrame.height
-                } else {
-                    self.cropView.viewModel.aspectRatio = CGFloat(ratio)
-                    self.cropView.setFixedRatioCropBox(zoom: false, cropBox: cropView.viewModel.cropBoxFrame)
-                }
-            }
         }
     }
 
+    private func layoutPerTransformationPreset() {
+        processPresetTransformation()
+
+        if case .alwaysUsingOnePresetFixedRatio(let ratio) = self.config.presetFixedRatioType {
+            self.cropView.aspectRatioLockEnabled = true
+            self.cropToolbar.handleFixedRatioSetted(ratio: ratio)
+
+            if ratio == 0 {
+                self.cropView.viewModel.aspectRatio = transform.maskFrame.width / transform.maskFrame.height
+            } else {
+                self.cropView.viewModel.aspectRatio = CGFloat(ratio)
+                self.cropView.setFixedRatioCropBox(zoom: false, cropBox: cropView.viewModel.cropBoxFrame)
+            }
+        }
+    }
+    
     private func getTransformInfo(byTransformInfo transformInfo: Transformation) -> Transformation {
         let cropFrame = cropView.viewModel.cropOrignFrame
         let contentBound = cropView.getContentBounds()
