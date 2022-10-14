@@ -53,11 +53,11 @@ final class ImageContainer: UIView {
     public var player: AVPlayer?
     private var videoLooper: AVPlayerLooper?
 
-    var video: URL? {
+    var video: AVAsset? {
         didSet {
             if let video {
                 // set up looping video player
-                let item = AVPlayerItem(url: video)
+                let item = AVPlayerItem(asset: video)
                 let player = AVQueuePlayer(playerItem: item)
                 videoLooper = AVPlayerLooper(player: player, templateItem: item)
                 videoView.player = player
