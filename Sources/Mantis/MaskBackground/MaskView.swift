@@ -20,20 +20,12 @@ class MaskView: UIView {
         CAShapeLayer.self
     }
 
+    var oldShapeLayerPath: CGPath?
+
     var cropRect: CGRect = .zero {
         didSet {
-            guard oldValue != cropRect, let shapeLayer = layer as? CAShapeLayer else { return }
-
+            guard let shapeLayer = layer as? CAShapeLayer else { return }
             let newPath = getPath(cropRect: cropRect)
-
-            // if an implicit animation has been initiated, it can be retrieved via one of many standard, longstanding view property keys
-            if let currentAnimation = action(for: layer, forKey: "backgroundColor") as? CABasicAnimation {
-                let pathAnimation = currentAnimation.copy(withKeyPath: "path")
-                pathAnimation.fromValue = shapeLayer.presentation()?.path
-                pathAnimation.toValue = newPath
-                layer.add(pathAnimation, forKey: "pathAnimation")
-            }
-
             shapeLayer.path = newPath
         }
     }
@@ -63,5 +55,25 @@ class MaskView: UIView {
         path.append(UIBezierPath(rect: bounds))
         path.usesEvenOddFillRule = true
         return path.cgPath
+    }
+
+    func prepareForAnimatedCropRectChange() {
+        guard let shapeLayer = layer as? CAShapeLayer else { return }
+        oldShapeLayerPath = shapeLayer.path
+    }
+
+    func animateToNewCropRect() {
+        guard let oldShapeLayerPath, let shapeLayer = layer as? CAShapeLayer else { return }
+        let newPath = getPath(cropRect: cropRect)
+
+        // implicit animations can be retrieved via one of many standard, longstanding view property keys
+        if let currentAnimation = action(for: layer, forKey: "backgroundColor") as? CABasicAnimation {
+            let pathAnimation = currentAnimation.copy(withKeyPath: "path")
+            pathAnimation.fromValue = oldShapeLayerPath
+            pathAnimation.toValue = newPath
+            layer.add(pathAnimation, forKey: "pathAnimation")
+        }
+
+        shapeLayer.path = newPath
     }
 }

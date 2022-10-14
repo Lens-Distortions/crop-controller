@@ -248,6 +248,7 @@ public class CropViewController: UIViewController {
     }    
     
     private func setFixedRatio(_ ratio: Double, zoom: Bool = true) {
+        cropView.cropMaskViewManager.prepareForAnimatedCropRectChange()
         cropToolbar.handleFixedRatioSetted(ratio: ratio)
         cropView.aspectRatioLockEnabled = true
         
@@ -259,6 +260,7 @@ public class CropViewController: UIViewController {
             } else {
                 UIView.animate(withDuration: 0.5) {
                     self.cropView.setFixedRatioCropBox(zoom: zoom)
+                    self.cropView.cropMaskViewManager.animateToNewCropRect()
                 }
             }
         }
