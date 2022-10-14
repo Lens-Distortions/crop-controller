@@ -23,6 +23,7 @@
 //  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import UIKit
+import AVFoundation
 
 public protocol CropViewControllerDelegate: AnyObject {
     func cropViewControllerDidCrop(_ cropViewController: CropViewController,
@@ -54,6 +55,21 @@ public class CropViewController: UIViewController {
         didSet {
             cropView.image = image
         }
+    }
+
+    /// The URL of a video to crop. IMPORTANT: because the `image` property is currently used
+    /// in a lot of places for sizing and UI config, it must also be set to an image with the
+    /// same dimensions as this video.
+    public var video: URL? {
+        didSet {
+            cropView.imageContainer.video = video
+        }
+    }
+
+    /// If `video` is set, this returns the player for it. Note that the video is
+    /// not played automatically, allowing clients to customize playback behavior.
+    public var player: AVPlayer? {
+        cropView.imageContainer.player
     }
     
     public weak var delegate: CropViewControllerDelegate?

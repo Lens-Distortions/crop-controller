@@ -49,9 +49,9 @@ class ImageContainer: UIView {
         return videoView
     }()
 
+    public var player: AVPlayer?
     private var videoLooper: AVPlayerLooper?
 
-    // TODO: eventually, it'd be nice to not require setting image (and setting up imageView) to crop video
     var video: URL? {
         didSet {
             if let video {
@@ -59,13 +59,9 @@ class ImageContainer: UIView {
                 let item = AVPlayerItem(url: video)
                 let player = AVQueuePlayer(playerItem: item)
                 videoLooper = AVPlayerLooper(player: player, templateItem: item)
-                player.isMuted = true // TODO: set per current user preference
                 videoView.player = player
                 videoView.playerLayer.videoGravity = .resizeAspect
-                // these two lines mitigate weird border artifacts that sometimes occur without them; memory impact is negligible.
-                // TODO: figure out if these are still necessary when running iOS 14+
-//                videoView.playerLayer.shouldRasterize = true
-//                videoView.playerLayer.rasterizationScale = UIScreen.main.scale
+                self.player = player
             } else {
                 videoView.player?.rate = 0
                 videoView.player = nil
