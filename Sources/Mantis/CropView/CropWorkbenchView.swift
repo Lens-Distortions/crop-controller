@@ -20,13 +20,13 @@ final class CropWorkbenchView: UIScrollView {
     deinit {
         print("CropWorkbenchView deinit")
     }
-    
+
     init(frame: CGRect,
          minimumZoomScale: CGFloat,
          maximumZoomScale: CGFloat,
          imageContainer: ImageContainerProtocol) {
         super.init(frame: frame)
-        
+
         alwaysBounceHorizontal = true
         alwaysBounceVertical = true
         showsHorizontalScrollIndicator = false
@@ -41,7 +41,7 @@ final class CropWorkbenchView: UIScrollView {
         initialMinimumZoomScale = minimumZoomScale
         self.imageContainer = imageContainer
         addSubview(self.imageContainer!)
-        
+
         isAccessibilityElement = false
     }
     
@@ -63,16 +63,16 @@ final class CropWorkbenchView: UIScrollView {
         touchesEnded()
         super.touchesBegan(touches, with: event)
     }
-        
+
     private func getBoundZoomScale() -> CGFloat {
         guard let imageContainer = imageContainer else {
             assertionFailure("We must have an imageContainer")
             return 1.0
         }
-        
+
         let scaleW = bounds.width / imageContainer.bounds.width
         let scaleH = bounds.height / imageContainer.bounds.height
-        
+
         return max(scaleW, scaleH) * initialMinimumZoomScale
     }
 }
@@ -90,7 +90,7 @@ extension CropWorkbenchView: CropWorkbenchViewProtocol {
             contentOffset.x = contentSize.width - bounds.size.width
         }
     }
-    
+
     func updateMinZoomScale() {
         minimumZoomScale = getBoundZoomScale()
     }
@@ -108,7 +108,7 @@ extension CropWorkbenchView: CropWorkbenchViewProtocol {
     }
     
     func updateLayout(byNewSize newSize: CGSize) {
-        let oldScrollViewcenter = center
+        let oldScrollViewCenter = center
         let contentOffsetCenter = CGPoint(x: (contentOffset.x + bounds.width / 2),
                                           y: (contentOffset.y + bounds.height / 2))
         
@@ -117,11 +117,11 @@ extension CropWorkbenchView: CropWorkbenchViewProtocol {
                                        y: (contentOffsetCenter.y - bounds.height / 2))
         
         contentOffset = newContentOffset
-        center = oldScrollViewcenter
+        center = oldScrollViewCenter
     }
     
     func reset(by rect: CGRect) {
-        // Reseting zoom need to be before resetting frame and contentsize
+        // Resetting zoom need to be before resetting frame and contentSize
         minimumZoomScale = max(1.0, initialMinimumZoomScale)
         zoomScale = minimumZoomScale
         
@@ -132,21 +132,21 @@ extension CropWorkbenchView: CropWorkbenchViewProtocol {
         frame = rect
         contentSize = newRect.size
     }
-    
+
     func resetImageContent(by cropBoxFrame: CGRect) {
         transform = .identity
         reset(by: cropBoxFrame)
-        
+
         guard let imageContainer = imageContainer else {
             assertionFailure("We must have an imageContainer")
             return
         }
-        
+
         imageContainer.frame = CGRect(x: 0,
                                       y: 0,
                                       width: contentSize.width,
                                       height: contentSize.height)
-        
+
         contentOffset = CGPoint(x: (imageContainer.frame.width - frame.width) / 2,
                                 y: (imageContainer.frame.height - frame.height) / 2)
     }

@@ -23,6 +23,7 @@
 //  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import UIKit
+import AVFoundation
 
 open class CropViewController: UIViewController {
     public weak var delegate: CropViewControllerDelegate?
@@ -37,6 +38,21 @@ open class CropViewController: UIViewController {
     private var cropStackView: UIStackView!
     private var initialLayout = false
     private var disableRotation = false
+
+    /// The URL of a video to crop. IMPORTANT: because the `image` property is currently used
+    /// in a lot of places for sizing and UI config, it must also be set to an image with the
+    /// same dimensions as this video.
+    public var video: URL? {
+        didSet {
+            cropView.imageContainer.video = video
+        }
+    }
+
+    /// If `video` is set, this returns the player for it. Note that the video is
+    /// not played automatically, allowing clients to customize playback behavior.
+    public var player: AVPlayer? {
+        cropView.imageContainer.player
+    }
     
     deinit {
         print("CropViewController deinit.")
@@ -182,6 +198,7 @@ open class CropViewController: UIViewController {
     }    
     
     private func setFixedRatio(_ ratio: Double, zoom: Bool = true) {
+        cropView.cropMaskViewManager.prepareForAnimatedCropRectChange()
         cropToolbar.handleFixedRatioSetted(ratio: ratio)
         cropView.setFixedRatio(ratio, zoom: zoom, presetFixedRatioType: config.presetFixedRatioType)
     }

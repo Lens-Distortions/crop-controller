@@ -69,4 +69,14 @@ extension CropMaskViewManager: CropMaskViewManagerProtocol {
     func adaptMaskTo(match cropRect: CGRect, cropRatio: CGFloat) {
         maskViews.forEach { $0.adaptMaskTo(match: cropRect, cropRatio: cropRatio) }
     }
+
+    func prepareForAnimatedCropRectChange() {
+        (dimmingView.mask as? MaskView)?.prepareForAnimatedCropRectChange()
+        (visualEffectView.mask as? MaskView)?.prepareForAnimatedCropRectChange()
+    }
+
+    func animateToNewCropRect() {
+        (dimmingView.mask as? MaskView)?.animateToNewCropRect()
+        (visualEffectView.mask as? MaskView)?.animateToNewCropRect()
+    }
 }
