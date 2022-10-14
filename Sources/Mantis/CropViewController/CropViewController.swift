@@ -57,10 +57,10 @@ public class CropViewController: UIViewController {
         }
     }
 
-    /// The URL of a video to crop. IMPORTANT: because the `image` property is currently used
-    /// in a lot of places for sizing and UI config, it must also be set to an image with the
+    /// A video to crop. IMPORTANT: because the `image` property is currently used in a
+    /// lot of places for sizing and UI config, it must also be set to an image with the
     /// same dimensions as this video.
-    public var video: URL? {
+    public var video: AVAsset? {
         didSet {
             cropView.imageContainer.video = video
         }
