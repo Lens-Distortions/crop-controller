@@ -56,10 +56,9 @@ class CropMaskViewManager {
     }
     
     func showDimmingBackground() {
-        UIView.animate(withDuration: 0.1) {
-            self.dimmingView.alpha = 1
-            self.visualEffectView.alpha = 0
-        }
+        // since the gridlines appear immediately, it feels better to hide visualEffectView immediately, too
+        dimmingView.alpha = 1
+        visualEffectView.alpha = 0
     }
     
     func showVisualEffectBackground() {
@@ -72,5 +71,15 @@ class CropMaskViewManager {
     func adaptMaskTo(match cropRect: CGRect, cropRatio: CGFloat) {
         dimmingView.adaptMaskTo(match: cropRect, cropRatio: cropRatio)
         visualEffectView.adaptMaskTo(match: cropRect, cropRatio: cropRatio)
+    }
+
+    func prepareForAnimatedCropRectChange() {
+        (dimmingView.mask as? MaskView)?.prepareForAnimatedCropRectChange()
+        (visualEffectView.mask as? MaskView)?.prepareForAnimatedCropRectChange()
+    }
+
+    func animateToNewCropRect() {
+        (dimmingView.mask as? MaskView)?.animateToNewCropRect()
+        (visualEffectView.mask as? MaskView)?.animateToNewCropRect()
     }
 }

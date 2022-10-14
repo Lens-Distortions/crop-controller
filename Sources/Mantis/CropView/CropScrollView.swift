@@ -93,7 +93,7 @@ class CropScrollView: UIScrollView {
     }
     
     func updateLayout(byNewSize newSize: CGSize) {
-        let oldScrollViewcenter = center
+        let oldScrollViewCenter = center
         let contentOffsetCenter = CGPoint(x: (contentOffset.x + bounds.width / 2),
                                           y: (contentOffset.y + bounds.height / 2))
         
@@ -102,11 +102,11 @@ class CropScrollView: UIScrollView {
                                        y: (contentOffsetCenter.y - bounds.height / 2))
         
         contentOffset = newContentOffset
-        center = oldScrollViewcenter
+        center = oldScrollViewCenter
     }
     
     func resetBy(rect: CGRect) {
-        // Reseting zoom need to be before resetting frame and contentsize
+        // Resetting zoom need to be before resetting frame and contentSize
         minimumZoomScale = max(1.0, initialMinimumZoomScale)
         zoomScale = minimumZoomScale
         

@@ -20,7 +20,9 @@ extension CropView: UIScrollViewDelegate {
     func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
         // A resize event has begun via gesture on the photo (scrollview), so notify delegate
         delegate?.cropViewDidBeginResize(self)
-        viewModel.setTouchImageStatus()
+        // don't want to set this status here because the zoom may have been
+        // automatically initiated (e.g. during an aspect ratio preset change)
+//        viewModel.setTouchImageStatus()
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
