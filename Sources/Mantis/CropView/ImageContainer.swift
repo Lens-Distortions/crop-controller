@@ -14,11 +14,11 @@ private class LDVideoView: UIView {
     override static var layerClass: AnyClass { AVPlayerLayer.self }
 
     var player: AVPlayer? {
-        get { playerLayer.player }
-        set { playerLayer.player = newValue }
+        get { playerLayer?.player }
+        set { playerLayer?.player = newValue }
     }
 
-    var playerLayer: AVPlayerLayer { layer as! AVPlayerLayer }
+    var playerLayer: AVPlayerLayer? { layer as? AVPlayerLayer }
 }
 
 final class ImageContainer: UIView {
@@ -61,7 +61,7 @@ final class ImageContainer: UIView {
                 let player = AVQueuePlayer(playerItem: item)
                 videoLooper = AVPlayerLooper(player: player, templateItem: item)
                 videoView.player = player
-                videoView.playerLayer.videoGravity = .resizeAspect
+                videoView.playerLayer?.videoGravity = .resizeAspect
                 self.player = player
             } else {
                 videoView.player?.rate = 0

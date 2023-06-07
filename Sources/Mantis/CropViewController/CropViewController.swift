@@ -156,7 +156,7 @@ open class CropViewController: UIViewController {
             initialLayout = true
             view.layoutIfNeeded()
             cropView.resetComponents()
-            layoutPerTransformationPreset()
+//            layoutPerTransformationPreset()
         }
     }
     
@@ -468,7 +468,7 @@ extension CropViewController {
     }
 
     public func getCropInfo() -> (CropInfo, Transformation) {
-        return (cropView.getCropInfo(), cropView.getTransformation())
+        return (cropView.getCropInfo(), cropView.makeTransformation())
     }
 
     public func disableFixedRatio() {

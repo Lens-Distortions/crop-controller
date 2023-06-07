@@ -11,7 +11,6 @@ import UIKit
 class CropDimmingView: UIView, CropMaskProtocol {
     var overLayerFillColor: CGColor = UIColor.black.cgColor
     var cropShapeType: CropShapeType = .rect
-    var imageRatio: CGFloat = 1.0
     
     convenience init(frame: CGRect, cropShapeType: CropShapeType = .rect) {
         self.init(frame: frame)

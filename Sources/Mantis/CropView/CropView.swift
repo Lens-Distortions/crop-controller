@@ -833,6 +833,7 @@ extension CropView: CropViewProtocol {
             } else {
                 UIView.animate(withDuration: 0.5) {
                     self.setFixedRatioCropBox(zoom: zoom)
+                    self.cropMaskViewManager.animateToNewCropRect()
                 }
             }
         }
@@ -1010,6 +1011,22 @@ extension CropView: CropViewProtocol {
             break
         }
     }
+    
+//    private func layoutPerTransformationPreset() {
+//        if let transform = processPresetTransformation() {
+//            if case .alwaysUsingOnePresetFixedRatio(let ratio) = self.config.presetFixedRatioType {
+//                self.cropView.aspectRatioLockEnabled = true
+//                self.cropToolbar.handleFixedRatioSetted(ratio: ratio)
+//
+//                if ratio == 0 {
+//                    self.viewModel.aspectRatio = transform.maskFrame.width / transform.maskFrame.height
+//                } else {
+//                    self.viewModel.aspectRatio = CGFloat(ratio)
+//                    self.setFixedRatioCropBox(zoom: false, cropBox: self.viewModel.cropBoxFrame)
+//                }
+//            }
+//        }
+//    }
 
     func horizontallyFlip() {
         viewModel.horizontallyFlip.toggle()

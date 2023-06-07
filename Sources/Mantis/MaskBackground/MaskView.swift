@@ -9,7 +9,9 @@ extension CAPropertyAnimation {
     /// - Parameter keyPath: The value of the returned animation's `keyPath`.
     /// - Returns An animation identical to the receiver with the given `keyPath`.
     func copy(withKeyPath keyPath: String) -> Self {
-        let copy = self.copy() as! Self
+        guard let copy = self.copy() as? Self else {
+            fatalError("copy(withKeyPath:) failed to copy self")
+        }
         copy.keyPath = keyPath
         return copy
     }
@@ -38,7 +40,9 @@ class MaskView: UIView {
         // the insets here are arbitrary: path will be properly configured when cropRect is set
         let path = getPath(cropRect: frame.insetBy(dx: 10, dy: 10))
 
-        let shapeLayer = layer as! CAShapeLayer
+        guard let shapeLayer = layer as? CAShapeLayer else {
+            fatalError("layer is not a CAShapeLayer")
+        }
         shapeLayer.path = path
         shapeLayer.fillRule = .evenOdd
         // any opaque color works here

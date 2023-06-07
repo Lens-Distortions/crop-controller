@@ -18,6 +18,12 @@ protocol CropViewProtocol: UIView {
     var aspectRatioLockEnabled: Bool { get set }
     var delegate: CropViewDelegate? { get set }
     
+    var viewModel: CropViewModelProtocol { get }
+    var imageContainer: ImageContainerProtocol { get }
+    var cropMaskViewManager: CropMaskViewManagerProtocol { get }
+    
+    func makeTransformation() -> Transformation
+    
     func initialSetup(delegate: CropViewDelegate, presetFixedRatioType: PresetFixedRatioType)
     func setViewDefaultProperties()
     func getRatioType(byImageIsOriginalHorizontal isHorizontal: Bool) -> RatioType
